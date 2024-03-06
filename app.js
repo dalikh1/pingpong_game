@@ -1,41 +1,43 @@
-const p1Btn = document.querySelector('#p1Btn');
-const p2Btn = document.querySelector('#p2Btn');
-const p1Display = document.querySelector('#p1Display');
-const p2Display = document.querySelector('#p2Display');
+let p1 = {
+    score : 0 ,
+    button : document.querySelector('#p1Btn'),
+    display : document.querySelector('#p1Display')
+}
+
+let p2 = {
+    score : 0 ,
+    button : document.querySelector('#p2Btn'),
+    display : document.querySelector('#p2Display')
+}
+
 const resetBtn = document.querySelector('#reset');
 const winningScoreSelect = document.querySelector('#playTo')
-
-
-
-let p2Score =0;
-let p1Score = 0;
-let winnigscore = 5;
+let winnigscore = 3;
 let gameOver = false
 
-p1Btn.addEventListener('click', function () {
+function updateScores (player, opponent) {
     if(!gameOver) {
-        p1Score += 1; 
-        if (p1Score === winnigscore) {
+        player.score += 1; 
+        if (player.score === winnigscore) {
             gameOver = true ;
-            p1Display.classList.add('winner')
-            p2Display.classList.add('loser')
+            player.display.classList.add('has-text-success')
+            opponent.display.classList.add('has-text-danger')
+            player.button.disabled = true;
+            opponent.button.disabled = true;
         }
-        p1Display.textContent = p1Score;
+        player.display.textContent = player.score;
     }
 
+}
+
+
+
+p1.button.addEventListener('click', function() {
+    updateScores(p1,p2)
 })
 
-p2Btn.addEventListener('click', function () {
-    if(!gameOver) {
-        p2Score += 1; 
-        if (p2Score === winnigscore) {
-            gameOver = true ;
-            p1Display.classList.add('loser')
-            p2Display.classList.add('winner')
-        }
-        p2Display.textContent = p2Score;
-    }
-
+p2.button.addEventListener('click', function() { 
+    updateScores(p2,p1)
 })
 
 winningScoreSelect.addEventListener('change', function () {
@@ -47,10 +49,11 @@ resetBtn.addEventListener('click', reset)
 
 function reset() {
     gameOver = false;
-    p1Score = 0;
-    p2Score = 0;
-    p1Display.textContent=0;
-    p2Display.textContent=0;
-    p1Display.classList.remove('loser','winner')
-    p2Display.classList.remove('winner','loser')
+    for (let p of [p1,p2]) {
+        p.score = 0;
+        p.display.textContent=0;
+        p.display.classList.remove('has-text-danger','has-text-success')
+        p.button.disabled = false;
+    }
+    
 }
